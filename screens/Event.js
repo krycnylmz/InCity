@@ -19,7 +19,7 @@ const Event = ({ route }) => {
 
   return (
     <ScrollView className="">
-      <View className="w-full h-80 bg-slate-300 mb-4">
+      <View className="w-full h-80 bg-slate-300 mb-4 relative">
         {event.imageUrl ? (
           <Image
             source={{ uri: event.imageUrl }}
@@ -33,12 +33,19 @@ const Event = ({ route }) => {
             resizeMode="cover"
           />
         )}
+        <View className="absolute bottom-0 right-0 bg-teal-500 p-2 rounded-tl-md">
+          <Text className="text-gray-50 text-xl ">1 / 1</Text>
+        </View>
       </View>
       <View className="bg-gray-1500 rounded-3xl p-4">
-        <Text className="text-2xl font-bold mb-2 text-teal-600">{event.name}</Text>
-        <Text className="text-md text-gray-700 mb-2">{event.description}</Text>
-        <Text className="text-md text-gray-700 mb-2">Date: {event.date}</Text>
-        <Text className="text-md text-gray-700 mb-2">Time: {event.time}</Text>
+        <Text className="text-2xl font-bold mb-2 text-teal-600">
+          {event.name}
+        </Text>
+        <Text className="text-xl text-gray-700 mb-2">{event.description}</Text>
+        <View className="flex flex-row justify-between">
+          <Text className="text-md text-gray-700 mb-2">Date: {event.date}</Text>
+          <Text className="text-md text-gray-700 mb-2">Time: {event.time}</Text>
+        </View>
         {/* <TouchableOpacity onPress={() => Linking.openURL(event.addressUrl)}>
           <Text className="text-md text-teal-600 mb-2">
             Address: {event.address}
@@ -50,11 +57,10 @@ const Event = ({ route }) => {
             onPress={() =>
               Linking.openURL(`tel:${event.internationalPhoneNumber}`)
             }
-            className="bg-teal-600 p-4 rounded-2xl"
+            className="bg-teal-600 p-4 rounded-2xl flex flex-row justify-center items-center"
           >
-            <Text className="text-md text-gray-50">
-              Call Now
-            </Text>
+            <Icon name="phone" size={18} className="text-gray-50 mx-2" />
+            <Text className="text-md text-gray-50">Call Now</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
