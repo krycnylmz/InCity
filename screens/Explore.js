@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
-import MapView, { Marker, Polyline, Circle } from "react-native-maps";
+import MapView, { Marker, Circle } from "react-native-maps";
 import * as Location from "expo-location";
 import Slider from "@react-native-community/slider";
-import useInterestStore from "../store/useInterestStore";
+import useExplorerPlaceStore from "../store/useExplorerPlaceStore";
 
 import { styled } from "nativewind";
+import { debounce } from "lodash";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -13,9 +14,9 @@ const StyledActivityIndicator = styled(ActivityIndicator);
 
 const Explore = () => {
   const [location, setLocation] = useState(null);
-  const [circleRadius, setCircleRadius] = useState(2000);
+  const [circleRadius, setCircleRadius] = useState(250);
   const [errorMsg, setErrorMsg] = useState(null);
-  const { places, getPlacesByInterests } = useInterestStore();
+  const { places, setPlaces } = useExplorerPlaceStore();
 
   useEffect(() => {
     (async () => {
@@ -29,15 +30,22 @@ const Explore = () => {
       setLocation(currentLocation.coords);
 
       // İlk yüklemede konuma göre yerleri getir
-      await getPlacesByInterests(currentLocation.coords.latitude, currentLocation.coords.longitude, circleRadius);
+      await setPlaces(circleRadius);
     })();
   }, []);
 
-  const handleRadiusChange = async (value) => {
+  const debouncedSetPlaces = useCallback(
+    debounce(async (value) => {
+      if (location) {
+        await setPlaces(value);
+      }
+    }, 500), // 500ms gecikme
+    [location]
+  );
+
+  const handleRadiusChange = (value) => {
     setCircleRadius(value);
-    if (location) {
-      await getPlacesByInterests(location.latitude, location.longitude, value);
-    }
+    debouncedSetPlaces(value);
   };
 
   return (
@@ -49,8 +57,8 @@ const Explore = () => {
             initialRegion={{
               latitude: location.latitude,
               longitude: location.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
+              latitudeDelta: 0.0322,
+              longitudeDelta: 0.0321,
             }}
           >
             <Marker
@@ -86,9 +94,9 @@ const Explore = () => {
             <StyledText className="text-center">Diameter: {circleRadius} meters</StyledText>
             <Slider
               style={{ width: "100%", height: 40 }}
-              minimumValue={100}
-              maximumValue={10000}
-              step={100}
+              minimumValue={250}
+              maximumValue={2000}
+              step={50}
               value={circleRadius}
               onValueChange={handleRadiusChange}
               minimumTrackTintColor="#1B1B1E"

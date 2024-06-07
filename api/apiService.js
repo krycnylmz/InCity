@@ -7,7 +7,7 @@ const API_BASE_URL = "http://192.168.1.7:8080/api/v1";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 20000,
 });
 
 const login = async (email, password) => {
@@ -226,6 +226,7 @@ export {
   addInterests,
   getUserInterests,
   getPlacesByInterests,
+  getPlacesByRadius,
   getEvents,
   getPlaceById,
 };
