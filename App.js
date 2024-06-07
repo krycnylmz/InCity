@@ -18,6 +18,7 @@ import InterestsSelectionScreen from "./screens/InterestsSelection";
 import PlaceScreen from "./screens/Place";
 import EventScreen from "./screens/Event";
 import ProfileScreen from "./screens/Profile";
+import ExploreScreen from "./screens/Explore";
 
 const Stack = createNativeStackNavigator();
 
@@ -100,6 +101,11 @@ export default function App() {
           <Stack.Screen
             name="Event"
             component={EventScreen}
+            options={{ headerShown: true, title: "", headerTintColor:"rgb(13 148 136)" }}
+          />
+          <Stack.Screen
+            name="Explore"
+            component={ExploreScreen}
             options={{ headerShown: true, title: "", headerTintColor:"rgb(13 148 136)" }}
           />
           <Stack.Screen

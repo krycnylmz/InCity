@@ -75,10 +75,6 @@ const Home = () => {
     }
   }, [interests])
   
-  const generateRouteHandler = () => {
-    console.log("Generate route feature is coming soon!");
-    alert("Generate route feature is coming soon!");
-  };
 
   const handleLogout = async () => {
     try {
@@ -97,7 +93,7 @@ const Home = () => {
     setSelectedCategory(slug);
   };
 
-  const filteredPlaces = places.filter((place) => place.types.includes(selectedCategory));
+  const filteredPlaces = places ? places.filter((place) => place.types.includes(selectedCategory)) : [];
 
   if (loading) {
     return (
@@ -115,14 +111,15 @@ const Home = () => {
           <Icon name="user" size={24} className="text-teal-600" />
         </TouchableOpacity>
       </View>
-      <ScrollView className="">
+      
+      
         <View className="flex flex-row justify-between p-4 space-y-2">
           <Text className="text-2xl font-medium">Explore!</Text>
-          <TouchableOpacity onPress={generateRouteHandler}>
+          <TouchableOpacity onPress={() => navigation.navigate("Explore")}>
             <Icon name="plus" size={24} className="text-gray-300" />
           </TouchableOpacity>
         </View>
-      </ScrollView>
+
       <View className="space-y-2">
         <Text className="text-xl px-4">Near Places</Text>
         <ScrollView

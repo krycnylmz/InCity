@@ -10,6 +10,7 @@ import {
 import Icon from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 
+
 // `route` props'unu function parametreleri arasına ekleyin.
 const Event = ({ route }) => {
   // `route.params` kullanarak `event` parametresine erişin.

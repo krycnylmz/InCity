@@ -109,7 +109,7 @@ const getUserInterests = async (token) => {
 
 // http://localhost:8080/api/v1/maps/getPlacesByUserInterest?latitude=38.40707&longitude=27.11492
 
-const getPlacesByInterests = async (token, radius) => {
+const getPlacesByRadius = async (token, radius) => {
   try {
     const location = await Location.getCurrentPositionAsync({});
     const { latitude, longitude } = location.coords;
@@ -121,6 +121,38 @@ const getPlacesByInterests = async (token, radius) => {
           latitude,
           longitude,
           radius,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    if (error.response) {
+      console.error(
+        "Getting places failed with response:",
+        error.response.data
+      );
+    } else {
+      console.error("Getting places failed:", error.message);
+    }
+    throw error;
+  }
+};
+
+const getPlacesByInterests = async (token) => {
+  try {
+    const location = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = location.coords;
+
+    const response = await apiClient.get(
+      "/maps/getPlacesByUserInterest",
+      {
+        params: {
+          latitude,
+          longitude,
         },
         headers: {
           Authorization: `Bearer ${token}`,
