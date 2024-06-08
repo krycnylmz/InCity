@@ -19,6 +19,8 @@ import PlaceScreen from "./screens/Place";
 import EventScreen from "./screens/Event";
 import ProfileScreen from "./screens/Profile";
 import ExploreScreen from "./screens/Explore";
+import CameraScreen from "./screens/CameraScreen";
+import PhotoPreview from "./screens/PhotoPreview";
 
 const Stack = createNativeStackNavigator();
 
@@ -111,6 +113,16 @@ export default function App() {
           <Stack.Screen
             name="Profile"
             component={ProfileScreen}
+            options={{ headerShown: true, headerTintColor:"rgb(13 148 136)" }}
+          />
+          <Stack.Screen
+            name="CameraScreen"
+            component={CameraScreen}
+            options={{ headerShown: true, headerTintColor:"rgb(13 148 136)" }}
+          />
+          <Stack.Screen
+            name="PhotoPreview"
+            component={PhotoPreview}
             options={{ headerShown: true, headerTintColor:"rgb(13 148 136)" }}
           />
           <Stack.Screen

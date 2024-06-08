@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, ActivityIndicator } from "react-native";
-import MapView, { Marker, Circle } from "react-native-maps";
+import { View, Text, ActivityIndicator, Alert } from "react-native";
+import MapView, { Marker, Circle,Callout } from "react-native-maps";
 import * as Location from "expo-location";
 import Slider from "@react-native-community/slider";
 import useExplorerPlaceStore from "../store/useExplorerPlaceStore";
 
 import { styled } from "nativewind";
 import { debounce } from "lodash";
+import { useNavigation } from "@react-navigation/native";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -16,7 +17,8 @@ const Explore = () => {
   const [location, setLocation] = useState(null);
   const [circleRadius, setCircleRadius] = useState(250);
   const [errorMsg, setErrorMsg] = useState(null);
-  const { places, setPlaces } = useExplorerPlaceStore();
+  const { places, setPlaces, isLoading } = useExplorerPlaceStore();
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -37,7 +39,14 @@ const Explore = () => {
   const debouncedSetPlaces = useCallback(
     debounce(async (value) => {
       if (location) {
-        await setPlaces(value);
+        try {
+          await setPlaces(value);
+        } catch (error) {
+          Alert.alert(
+            "Error",
+            "Failed to fetch places. Please try again later."
+          );
+        }
       }
     }, 500), // 500ms gecikme
     [location]
@@ -52,6 +61,11 @@ const Explore = () => {
     <StyledView className="flex-1">
       {location ? (
         <>
+          {isLoading && (
+            <StyledView className="absolute top-12 left-5 right-5 bg-white p-4 rounded-xl shadow-lg z-50">
+              <StyledActivityIndicator size="small" color="teal" />
+            </StyledView>
+          )}
           <MapView
             style={{ flex: 1 }}
             initialRegion={{
@@ -69,16 +83,23 @@ const Explore = () => {
                 longitude: location.longitude,
               }}
             />
-            {places && places.map((place, index) => (
-              <Marker
+            {places &&
+              places.map((place, index) => (
+                <Marker
                 key={index}
                 coordinate={{
                   latitude: place.latitude,
                   longitude: place.longitude,
                 }}
-                title={place.name}
-              />
-            ))}
+              >
+                <Callout onPress={() => navigation.navigate("Place", { placeId: place.placeId })}>
+                  <View>
+                    <Text>{place.name}</Text>
+                    <Text>{place.rating}</Text>
+                  </View>
+                </Callout>
+              </Marker>
+              ))}
             <Circle
               center={{
                 latitude: location.latitude,
@@ -91,7 +112,9 @@ const Explore = () => {
             />
           </MapView>
           <StyledView className="absolute bottom-12 left-5 right-5 bg-white p-4 rounded-xl shadow-lg">
-            <StyledText className="text-center">Diameter: {circleRadius} meters</StyledText>
+            <StyledText className="text-center">
+              Diameter: {circleRadius} meters
+            </StyledText>
             <Slider
               style={{ width: "100%", height: 40 }}
               minimumValue={250}
@@ -108,7 +131,9 @@ const Explore = () => {
       ) : (
         <StyledView className="flex-1 justify-center items-center">
           <StyledActivityIndicator size="large" color="teal" />
-          <StyledText className="text-xl mt-4">Waiting for location...</StyledText>
+          <StyledText className="text-xl mt-4">
+            Waiting for location...
+          </StyledText>
           <StyledText className="text-center mt-2">
             We are getting your current position and will show it on the map.
           </StyledText>

@@ -40,13 +40,13 @@ const useInterestStore = create((set) => ({
     }
   },
 
-  getPlacesByInterests: async function (radius) {
+  getPlacesByInterests: async function () {
     try {
       const token = await AsyncStorage.getItem("userToken");
       if (!token) {
         throw new Error("No token found");
       }
-      const places = await apiGetPlacesByInterests(token,radius);
+      const places = await apiGetPlacesByInterests(token);
       // console.log(`panda places ${places}`);
       set({ places });
       return places;

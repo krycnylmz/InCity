@@ -49,7 +49,7 @@ const Home = () => {
 
         await getUserInterests();
         const token = await AsyncStorage.getItem('userToken');
-        await getPlacesByInterests(2000);
+        await getPlacesByInterests();
         // console.log("Places data:", places); // Places datasını console'a bastır
       } catch (error) {
         console.error("Error fetching interests:", error);
@@ -108,6 +108,11 @@ const Home = () => {
       <View className="flex flex-row justify-between p-4 py-1 space-y-2">
         <Image source={require("../assets/images/logo_gradient.png")} />
         <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <Icon name="user" size={24} className="text-teal-600" />
+        </TouchableOpacity>
+      </View>
+      <View className="flex flex-row justify-between p-4 py-1 space-y-2">
+        <TouchableOpacity onPress={() => navigation.navigate("CameraScreen")}>
           <Icon name="user" size={24} className="text-teal-600" />
         </TouchableOpacity>
       </View>
